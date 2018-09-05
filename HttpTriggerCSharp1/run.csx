@@ -10,11 +10,18 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
         .Value;
 
     // Get request body
-    dynamic data = await req.Content.ReadAsAsync<object>();
+    //dynamic data = await req.Content.ReadAsAsync<object>();
 
     // Set name to query string or body data
-    name = name ?? data?.name;
+  //  name = name ?? data?.name;
 
+    // Get request body
+            var data = await req.Content.ReadAsFormDataAsync();
+
+            
+            // Set name to query string or body data
+            name = name ?? data.GetValues("name").First();
+    
     return name == null
         ? req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body")
         : req.CreateResponse(HttpStatusCode.OK, "Hello there everyone and, " + name);
